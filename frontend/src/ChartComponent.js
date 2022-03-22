@@ -6,9 +6,11 @@ import {
   LinearScale,
   Title,
   Tooltip,
+  PointElement,
+  LineElement,
 } from 'chart.js';
 import { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 ChartJS.register(
   CategoryScale,
@@ -16,7 +18,9 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  PointElement,
+  LineElement
 );
 
 ChartJS.defaults.color = '#AAAAAA';
@@ -48,6 +52,12 @@ const options = {
       },
     },
   },
+  animation: {
+    duration: 0,
+  },
+  transitions: {
+    active: 100,
+  }
 };
 
 const custom_canvas_background_color = {
@@ -98,7 +108,7 @@ const ChartComponent = ({ currentX, time }) => {
 
   return (
     <div className='chart'>
-      <Bar
+      <Line
         data={data}
         options={options}
         plugins={[custom_canvas_background_color]}
