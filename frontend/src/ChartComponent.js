@@ -7,6 +7,7 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
+import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -18,7 +19,8 @@ ChartJS.register(
   Legend
 );
 
-const labels = ['1.0', '1.1', '1.2', '1.3', '1.4', '1.5', '1.6'];
+ChartJS.defaults.color = '#AAAAAA';
+const bgColor = '#20232a';
 
 const options = {
   responsive: true,
@@ -32,26 +34,20 @@ const options = {
       },
       min: 0,
       max: 2,
+      grid: {
+        color: bgColor,
+      },
     },
     x: {
       title: {
         display: true,
         text: 'Time (s)',
       },
+      grid: {
+        color: bgColor,
+      },
     },
   },
-};
-
-const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Traffic light on',
-      data: [1, 1, 0, 0, 0, 0, 1],
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-  ],
 };
 
 const custom_canvas_background_color = {
@@ -59,18 +55,37 @@ const custom_canvas_background_color = {
   beforeDraw: (chart, args, options) => {
     const {
       ctx,
-      chartArea: { top, right, bottom, left, width, height },
-      scales: { x, y },
+      chartArea: { top, left, width, height },
     } = chart;
     ctx.save();
     ctx.globalCompositeOperation = 'destination-over';
-    ctx.fillStyle = '#20232a';
+    ctx.fillStyle = bgColor;
     ctx.fillRect(left, top, width, height);
     ctx.restore();
   },
 };
 
-const ChartComponent = () => {
+const ChartComponent = ({ currentX, time }) => {
+  const [yDataSet, setYDataSet] = useState([]);
+  const [xDataSet, setXDataSet] = useState([]);
+
+  useEffect(() => {
+    setYDataSet((ds) => [...ds, time]);
+    setXDataSet((ds) => [...ds, currentX]);
+  }, [currentX, time]);
+
+  const data = {
+    labels: yDataSet,
+    datasets: [
+      {
+        label: 'Traffic light status',
+        data: xDataSet,
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+    ],
+  };
+
   return (
     <div className='chart'>
       <Bar
