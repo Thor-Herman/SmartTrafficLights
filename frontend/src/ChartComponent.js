@@ -33,6 +33,12 @@ const options = {
       min: 0,
       max: 2,
     },
+    x: {
+      title: {
+        display: true,
+        text: 'Time (s)',
+      },
+    },
   },
 };
 
@@ -48,15 +54,30 @@ const data = {
   ],
 };
 
-const ChartComponent = () => {
-  // var canvas = document.getElementById('');
-  // var parent = document.getElementById('app');
-  // canvas.width = parent.offsetWidth;
-  // canvas.height = parent.offsetHeight;
+const custom_canvas_background_color = {
+  id: 'custom_canvas_background_color',
+  beforeDraw: (chart, args, options) => {
+    const {
+      ctx,
+      chartArea: { top, right, bottom, left, width, height },
+      scales: { x, y },
+    } = chart;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = '#20232a';
+    ctx.fillRect(left, top, width, height);
+    ctx.restore();
+  },
+};
 
+const ChartComponent = () => {
   return (
     <div className='chart'>
-      <Bar data={data} options={options}/>
+      <Bar
+        data={data}
+        options={options}
+        plugins={[custom_canvas_background_color]}
+      />
     </div>
   );
 };
