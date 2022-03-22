@@ -70,8 +70,18 @@ const ChartComponent = ({ currentX, time }) => {
   const [xDataSet, setXDataSet] = useState([]);
 
   useEffect(() => {
-    setYDataSet((ds) => [...ds, time]);
-    setXDataSet((ds) => [...ds, currentX]);
+    setYDataSet((ds) => {
+      if (ds.length > 30)
+        // Don't want to display all values. Only most recent 3 seconds
+        ds = ds.slice(ds.length - 30);
+      return [...ds, time];
+    });
+    setXDataSet((ds) => {
+      if (ds.length > 30)
+        // Don't want to display all values. Only most recent 3 seconds
+        ds = ds.slice(ds.length - 30);
+      return [...ds, currentX];
+    });
   }, [currentX, time]);
 
   const data = {
