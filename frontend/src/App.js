@@ -1,9 +1,11 @@
 import React from 'react';
+import './App.css';
+import ChartComponent from './ChartComponent';
 
 const App = () => {
   return (
-    <div>
-      <p>Hello</p>
+    <div className='app'>
+      <ChartComponent />
     </div>
   );
 };
