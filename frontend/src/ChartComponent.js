@@ -12,6 +12,9 @@ import {
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 
+import { customCanvasBackgroundColor } from './plugins';
+import { CHART_BG_COLOR, MAX_POINTS_DISPLAYED_ON_CHART } from './consts';
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -24,7 +27,6 @@ ChartJS.register(
 );
 
 ChartJS.defaults.color = '#AAAAAA';
-const bgColor = '#20232a';
 
 const options = {
   responsive: true,
@@ -39,7 +41,7 @@ const options = {
       min: 0,
       max: 2,
       grid: {
-        color: bgColor,
+        color: CHART_BG_COLOR,
       },
     },
     x: {
@@ -48,7 +50,7 @@ const options = {
         text: 'Time (s)',
       },
       grid: {
-        color: bgColor,
+        color: CHART_BG_COLOR,
       },
     },
   },
@@ -60,42 +62,27 @@ const options = {
   }
 };
 
-const custom_canvas_background_color = {
-  id: 'custom_canvas_background_color',
-  beforeDraw: (chart, args, options) => {
-    const {
-      ctx,
-      chartArea: { top, left, width, height },
-    } = chart;
-    ctx.save();
-    ctx.globalCompositeOperation = 'destination-over';
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(left, top, width, height);
-    ctx.restore();
-  },
-};
-
 const ChartComponent = ({ currentX, time }) => {
-  const [yDataSet, setYDataSet] = useState([]);
+  const [labels, setLabels] = useState([]);
   const [xDataSet, setXDataSet] = useState([]);
 
   useEffect(() => {
-    setYDataSet((ds) => {
-      if (ds.length > 30)
+    setLabels((ds) => {
+      if (ds.length > MAX_POINTS_DISPLAYED_ON_CHART)
         // Don't want to display all values. Only most recent 3 seconds
-        ds = ds.slice(ds.length - 30);
+        ds = ds.slice(ds.length - MAX_POINTS_DISPLAYED_ON_CHART);
       return [...ds, time];
     });
     setXDataSet((ds) => {
-      if (ds.length > 30)
+      if (ds.length > MAX_POINTS_DISPLAYED_ON_CHART)
         // Don't want to display all values. Only most recent 3 seconds
-        ds = ds.slice(ds.length - 30);
+        ds = ds.slice(ds.length - MAX_POINTS_DISPLAYED_ON_CHART);
       return [...ds, currentX];
     });
   }, [currentX, time]);
 
   const data = {
-    labels: yDataSet,
+    labels: labels,
     datasets: [
       {
         label: 'Traffic light status',
@@ -111,7 +98,7 @@ const ChartComponent = ({ currentX, time }) => {
       <Line
         data={data}
         options={options}
-        plugins={[custom_canvas_background_color]}
+        plugins={[customCanvasBackgroundColor]}
       />
     </div>
   );
