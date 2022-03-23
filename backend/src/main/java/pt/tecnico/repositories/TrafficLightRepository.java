@@ -2,13 +2,13 @@ package pt.tecnico.repositories;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import pt.tecnico.entities.Device;
+import pt.tecnico.entities.TrafficLight;
 
 import java.util.Optional;
 
 @Repository
-public interface DeviceRepository extends CrudRepository<Device, Integer> {
+public interface TrafficLightRepository extends CrudRepository<TrafficLight, Integer> {
 
-    Optional<Device> findById(Integer id);
+    Optional<TrafficLight> findById(Integer id);
 
 }

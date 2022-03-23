@@ -11,10 +11,12 @@ public class Device {
     @Column(name = "`Device_ID`")
     private int id;
 
-    @Column(name = "TrafficLight_1", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "Traffic_Light_1_ID", referencedColumnName = "Traffic_Light_ID")
     private TrafficLight tf1;
 
-    @Column(name = "TrafficLight_2", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "Traffic_Light_2_ID", referencedColumnName = "Traffic_Light_ID")
     private TrafficLight tf2;
 
     public TrafficLight getTf1() {
