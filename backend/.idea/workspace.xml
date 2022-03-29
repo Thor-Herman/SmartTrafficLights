@@ -5,24 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e9f4ac7e-265b-40bf-b6e8-d7f71107e850" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/repositories/TrafficLightRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/MQTT.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/services/MQTTService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/controllers/DeviceManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/controllers/DeviceManagementController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/controllers/DeviceMetricsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/controllers/DeviceMetricsController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/entities/Device.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/entities/Device.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/entities/TrafficLight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/entities/TrafficLight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/repositories/DeviceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/repositories/DeviceRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/services/DeviceManagementService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/services/DeviceManagementService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/services/DeviceMetricsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/services/DeviceMetricsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/pt/tecnico/MQTT.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/pt/tecnico/controllers/DeviceManagementController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/tecnico/controllers/DeviceManagementController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/services/MQTTService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/services/MQTTService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/pt/tecnico/controllers/DeviceMetricsController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/tecnico/controllers/DeviceMetricsController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/pt/tecnico/entities/Device.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/tecnico/entities/Device.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/pt/tecnico/entities/TrafficLight.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/tecnico/entities/TrafficLight.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/pt/tecnico/repositories/DeviceRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/tecnico/repositories/DeviceRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/pt/tecnico/services/DeviceManagementService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/tecnico/services/DeviceManagementService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/pt/tecnico/services/DeviceMetricsService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/tecnico/services/DeviceMetricsService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/pt/tecnico/services/MQTTService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/tecnico/services/MQTTService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +74,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Documents/GitHub/Swiggest/SwiggestGateway" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../sec/SEC_project" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">

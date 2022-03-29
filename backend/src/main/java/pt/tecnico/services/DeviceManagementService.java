@@ -16,7 +16,7 @@ public class DeviceManagementService {
 
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getSimpleName());
 
-    private TrafficLightRepository trafficLightRepository;
+    private final TrafficLightRepository trafficLightRepository;
 
     @Autowired
     public DeviceManagementService(TrafficLightRepository trafficLightRepository) {
@@ -24,12 +24,19 @@ public class DeviceManagementService {
     }
 
     public TrafficLightState getTrafficLightState(int id) {
+        logger.info("Fetching current tf light state...");
         Optional<TrafficLight> tf = trafficLightRepository.findById(id);
-        return tf.map(TrafficLight::getState).orElse(null);
+        return tf.map(TrafficLight::getCurrentLightState).orElse(null);
     }
 
     private void computeTrafficLightState() {
-        //TODO: Algorithm to determine traffic light state according to computer vision data
+        //TODO: Determine TL state according to traffic density and waiting time by leveraging computer vision data (STLSDT)
+        logger.info("Computing next traffic light state...");
+        //compute traffic density (di) and waiting time (ti) of cars in WZ
+        //while (number of cars left > 0)
+        //  if ((ti2 the maximum delay found on the road with the red light < 7 seconds)
+        //      || (di1 the density of the road with green light < di2 the density of the road with red light))
+        //      letPass(di2)
     }
 
 }

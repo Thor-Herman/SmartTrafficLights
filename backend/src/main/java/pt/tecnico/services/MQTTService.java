@@ -8,8 +8,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import pt.tecnico.entities.Device;
 import pt.tecnico.entities.TrafficLight;
 import pt.tecnico.entities.TrafficLightState;
+import pt.tecnico.repositories.DeviceRepository;
 import pt.tecnico.repositories.TrafficLightRepository;
 
 import java.io.*;
@@ -28,21 +30,25 @@ public class MQTTService {
     private final int CONNECTION_TIMEOUT = 0; //TODO: Change to 10 when actual connection is established
     private final int QOS = 0;
 
+    private final DeviceRepository deviceRepository;
     private final TrafficLightRepository trafficLightRepository;
     private IMqttClient publisher;
     private IMqttClient subscriber;
     private byte[] payload;
 
     @Autowired
-    public MQTTService(TrafficLightRepository trafficLightRepository) {
+    public MQTTService(DeviceRepository deviceRepository, TrafficLightRepository trafficLightRepository) {
+        this.deviceRepository = deviceRepository;
         this.trafficLightRepository = trafficLightRepository;
         setup();
     }
 
     public void setup() {
         String publisherId = UUID.randomUUID().toString();
+        String subscriberId = UUID.randomUUID().toString();
         try {
             publisher = new MqttClient(SERVER_URI, publisherId);
+            subscriber = new MqttClient(SERVER_URI, subscriberId);
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
             logger.error("Error: ", e);
         }
@@ -83,6 +89,9 @@ public class MQTTService {
     }
 
     public void receive() throws MqttException {
+        if (!subscriber.isConnected()) {
+            return;
+        }
         CountDownLatch receivedSignal = new CountDownLatch(10);
         subscriber.subscribe(TOPIC, (topic, msg) -> {
             setPayload(msg.getPayload());
@@ -102,11 +111,11 @@ public class MQTTService {
             while(ois.available() != 0) {
                 TrafficLight deserializedTrafficLight = (TrafficLight) ois.readObject();
                 logger.info("Deserialized tf object with id: " + deserializedTrafficLight.getId() +
-                        " and state: " + deserializedTrafficLight.getState());
+                        " and state: " + deserializedTrafficLight.getCurrentLightState());
                 trafficLightList.add(deserializedTrafficLight);
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("Error: ", e);
         }
         return trafficLightList;
     }
@@ -122,13 +131,16 @@ public class MQTTService {
             logger.error("Error: ", e);
         }
         if(!trafficLightList.isEmpty()) {
+            TrafficLight tf1 = trafficLightList.get(0);
+            TrafficLight tf2 = trafficLightList.get(1);
+            Device device = new Device(tf1, tf2);
             try {
-                trafficLightRepository.save(trafficLightList.get(0));
-                trafficLightRepository.save(trafficLightList.get(1));
+                trafficLightRepository.save(tf1);
+                trafficLightRepository.save(tf2);
+                deviceRepository.save(device);
             } catch (DataAccessException e) {
                 logger.error("Error: ", e);
             }
         }
     }
-
 }

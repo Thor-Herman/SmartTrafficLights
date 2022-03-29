@@ -1,31 +1,41 @@
 package pt.tecnico.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pt.tecnico.entities.TrafficLightState;
+import pt.tecnico.services.DeviceMetricsService;
 
 @RestController
 public class DeviceMetricsController {
 
-    @CrossOrigin(origins = "*")
-    @GetMapping(path="/readRedTime")
-    public ResponseEntity<TrafficLightState> readRedTime(int id) {
-        return new ResponseEntity<>(HttpStatus.OK);
+    private final DeviceMetricsService deviceMetricsService;
+
+    @Autowired
+    public DeviceMetricsController(DeviceMetricsService deviceMetricsService) {
+        this.deviceMetricsService = deviceMetricsService;
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping(path="/readYellowTime")
-    public ResponseEntity<TrafficLightState> readYellowTime(int id) {
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping(path="/readRedDuration")
+    public ResponseEntity<Integer> readRedDuration(String id) {
+        int duration = deviceMetricsService.computeRedDuration(id);
+        return new ResponseEntity<>(duration, HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping(path="/readGreenTime")
-    public ResponseEntity<TrafficLightState> readGreenTime(int id) {
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping(path="/readYellowDuration")
+    public ResponseEntity<Integer> readYellowDuration(String id) {
+        int duration = deviceMetricsService.computeYellowDuration(id);
+        return new ResponseEntity<>(duration, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping(path="/readGreenDuration")
+    public ResponseEntity<Integer> readGreenDuration(String id) {
+        int duration = deviceMetricsService.computeGreenDuration(id);
+        return new ResponseEntity<>(duration, HttpStatus.OK);
+    }
 }
