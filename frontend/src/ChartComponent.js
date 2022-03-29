@@ -1,66 +1,9 @@
-import {
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  Title,
-  Tooltip,
-  PointElement,
-  LineElement,
-} from 'chart.js';
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 
 import { customCanvasBackgroundColor } from './plugins';
-import { CHART_BG_COLOR, MAX_POINTS_DISPLAYED_ON_CHART } from './consts';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  PointElement,
-  LineElement
-);
-
-ChartJS.defaults.color = '#AAAAAA';
-
-const options = {
-  responsive: true,
-  scales: {
-    y: {
-      ticks: {
-        // Include a dollar sign in the ticks
-        callback: function (value, index, ticks) {
-          return value === 1 ? 'On' : value === 0 ? 'Off' : '';
-        },
-      },
-      min: 0,
-      max: 2,
-      grid: {
-        color: CHART_BG_COLOR,
-      },
-    },
-    x: {
-      title: {
-        display: true,
-        text: 'Time (s)',
-      },
-      grid: {
-        color: CHART_BG_COLOR,
-      },
-    },
-  },
-  animation: {
-    duration: 0,
-  },
-  transitions: {
-    active: 100,
-  }
-};
+import { MAX_POINTS_DISPLAYED_ON_CHART } from './consts';
+import { options } from './chartConfig';
 
 const ChartComponent = ({ currentX, time }) => {
   const [labels, setLabels] = useState([]);
