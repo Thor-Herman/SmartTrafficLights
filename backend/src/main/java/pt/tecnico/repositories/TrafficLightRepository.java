@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface TrafficLightRepository extends CrudRepository<TrafficLight, Integer> {
 
-    Optional<TrafficLight> findById(Integer id);
+    Optional<TrafficLight> findById(int id);
 
 }

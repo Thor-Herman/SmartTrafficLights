@@ -1,52 +1,53 @@
 package pt.tecnico.entities;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.Instant;
 
 @Entity
 @Table(name = "`Traffic_Light`")
 public class TrafficLight {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Traffic_Light_ID")
-    private String id;
+    private int id;
 
     @Column(name = "Timestamp", nullable = false)
-    private Date timestamp;
+    private Instant timestamp;
 
-    @Column(name = "Red_Light_Duration", nullable = false)
+    @Column(name = "Red_Light_Duration")
     private TrafficLightState redLightDuration;
 
-    @Column(name = "Green_Light_Duration", nullable = false)
+    @Column(name = "Green_Light_Duration")
     private TrafficLightState greenLightDuration;
 
-    @Column(name = "Yellow_Light_Duration", nullable = false)
+    @Column(name = "Yellow_Light_Duration")
     private TrafficLightState yellowLightDuration;
 
-    @Transient
+    @Column(name = "Current_Light_State")
     private TrafficLightState currentLightState;
 
     public TrafficLight() {
     }
 
-    public TrafficLight(TrafficLightState currentLightState, String lat, String lng) {
+    public TrafficLight(TrafficLightState currentLightState) {
         this.currentLightState = currentLightState;
-        id = lat + lng;
+        timestamp = Instant.now();
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Date getTimestamp() {
+    public Instant getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
     }
 
