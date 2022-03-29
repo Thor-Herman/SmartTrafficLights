@@ -16,6 +16,9 @@ const App = () => {
           const newCurrentX = Math.round(Math.random());
           return { currentX: newCurrentX, time: newTime.toFixed(1) };
         });
+        fetch('127.0.0.1:8080/readTrafficLightState/1')
+          .then((response) => response.json)
+          .then((data) => console.log(data));
       }, 500),
     []
   );
