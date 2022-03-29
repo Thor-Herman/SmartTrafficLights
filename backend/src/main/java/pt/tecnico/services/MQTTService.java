@@ -122,6 +122,12 @@ public class MQTTService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initializeDevice() {
+
+        //TESTING
+        TrafficLight trafficLight = new TrafficLight(TrafficLightState.GREEN);
+        trafficLightRepository.save(trafficLight);
+        //DONE TESTING
+        /**
         List<TrafficLight> trafficLightList = new ArrayList<>();
         try {
             connect();
@@ -142,5 +148,6 @@ public class MQTTService {
                 logger.error("Error: ", e);
             }
         }
+         */
     }
 }

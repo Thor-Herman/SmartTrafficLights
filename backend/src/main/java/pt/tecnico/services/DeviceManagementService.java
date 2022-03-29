@@ -25,8 +25,8 @@ public class DeviceManagementService {
 
     public TrafficLightState getTrafficLightState(int id) {
         logger.info("Fetching current tf light state...");
-        Optional<TrafficLight> tf = trafficLightRepository.findById(id);
-        return tf.map(TrafficLight::getCurrentLightState).orElse(null);
+        Optional<TrafficLight> optionalTrafficLight = trafficLightRepository.findById(id);
+        return optionalTrafficLight.map(TrafficLight::getCurrentLightState).orElse(null);
     }
 
     private void computeTrafficLightState() {
