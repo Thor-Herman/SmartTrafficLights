@@ -1,26 +1,29 @@
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-
-import { customCanvasBackgroundColor } from './plugins';
-import { MAX_POINTS_DISPLAYED_ON_CHART } from './consts';
 import { options } from './chartConfig';
+import { MAX_POINTS_DISPLAYED_ON_CHART } from './consts';
+import { customCanvasBackgroundColor } from './plugins';
 
 const ChartComponent = ({ currentX, time }) => {
   const [labels, setLabels] = useState([]);
-  const [xDataSet, setXDataSet] = useState([]);
+  const [xDataSet, setXDataSet] = useState([[], []]);
 
   useEffect(() => {
-    setLabels((ds) => {
-      if (ds.length > MAX_POINTS_DISPLAYED_ON_CHART)
+    setLabels((labels) => {
+      if (labels.length > MAX_POINTS_DISPLAYED_ON_CHART)
         // Don't want to display all values. Only most recent 3 seconds
-        ds = ds.slice(ds.length - MAX_POINTS_DISPLAYED_ON_CHART);
-      return [...ds, time];
+        labels = labels.slice(labels.length - MAX_POINTS_DISPLAYED_ON_CHART);
+      return [...labels, time];
     });
     setXDataSet((ds) => {
-      if (ds.length > MAX_POINTS_DISPLAYED_ON_CHART)
-        // Don't want to display all values. Only most recent 3 seconds
-        ds = ds.slice(ds.length - MAX_POINTS_DISPLAYED_ON_CHART);
-      return [...ds, currentX];
+      const newDs = [...ds];
+      currentX.forEach((x, i) => {
+        if (newDs[i].length > MAX_POINTS_DISPLAYED_ON_CHART)
+          // Don't want to display all values. Only most recent 3 seconds
+          newDs[i] = newDs[i].slice(ds.length - MAX_POINTS_DISPLAYED_ON_CHART);
+        newDs[i].push(x);
+      });
+      return newDs;
     });
   }, [currentX, time]);
 
@@ -29,9 +32,15 @@ const ChartComponent = ({ currentX, time }) => {
     datasets: [
       {
         label: 'Traffic light status',
-        data: xDataSet,
+        data: xDataSet[0],
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+      {
+        label: 'Traffic light status',
+        data: xDataSet[1],
+        borderColor: 'rgb(0, 99, 132)',
+        backgroundColor: 'rgba(0, 99, 132, 0.5)',
       },
     ],
   };
