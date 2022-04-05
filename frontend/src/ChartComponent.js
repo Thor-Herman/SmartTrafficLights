@@ -1,59 +1,80 @@
 import { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import { options } from './chartConfig';
-import { MAX_POINTS_DISPLAYED_ON_CHART } from './consts';
-import { customCanvasBackgroundColor } from './plugins';
+import ChartRenderer from './ChartRenderer';
+import { SERVER_URL } from './consts';
 
-const ChartComponent = ({ currentX, time }) => {
-  const [labels, setLabels] = useState([]);
-  const [xDataSet, setXDataSet] = useState([[], []]);
+const enumMapping = {
+  GREEN: 2,
+  YELLOW: 1,
+  RED: 0,
+};
 
-  useEffect(() => {
-    setLabels((labels) => {
-      if (labels.length > MAX_POINTS_DISPLAYED_ON_CHART)
-        // Don't want to display all values. Only most recent 3 seconds
-        labels = labels.slice(labels.length - MAX_POINTS_DISPLAYED_ON_CHART);
-      return [...labels, time];
-    });
-    setXDataSet((ds) => {
-      const newDs = [...ds];
-      currentX.forEach((x, i) => {
-        if (newDs[i].length > MAX_POINTS_DISPLAYED_ON_CHART)
-          // Don't want to display all values. Only most recent 3 seconds
-          newDs[i] = newDs[i].slice(ds.length - MAX_POINTS_DISPLAYED_ON_CHART);
-        newDs[i].push(x);
-      });
-      return newDs;
-    });
-  }, [currentX, time]);
+const ChartComponent = () => {
+  const [state, setState] = useState({
+    1: { id: 1, currentX: 0, time: 0 },
+    2: { id: 2, currentX: 0, time: 0 },
+  });
 
-  const data = {
-    labels: labels,
-    datasets: [
-      {
-        label: 'Traffic light status',
-        data: xDataSet[0],
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-      {
-        label: 'Traffic light status',
-        data: xDataSet[1],
-        borderColor: 'rgb(0, 99, 132)',
-        backgroundColor: 'rgba(0, 99, 132, 0.5)',
-      },
-    ],
+  const fetchResponse = async (id) => {
+    try {
+      const response = await fetch(
+        SERVER_URL + '/readTrafficLightState?tf_id=' + id
+      );
+      switch (response.status) {
+        case 500:
+        case 304:
+        case 404:
+          return 0;
+        default:
+          response.json();
+      }
+    } catch (e) {
+      return 0;
+    }
   };
 
-  return (
-    <div className='chart'>
-      <Line
-        data={data}
-        options={options}
-        plugins={[customCanvasBackgroundColor]}
-      />
-    </div>
-  );
+  const fetchResponses = async () => {
+    const responses = [];
+    const keys = Object.keys(state);
+    for (let i = 0; i < keys.length; i++) {
+      const id = keys[i];
+      const result = await fetchResponse(id);
+      responses.push(enumMapping[result]);
+    }
+    return responses;
+  };
+
+  const updateState = async (id) => {
+    const responses = await fetchResponses();
+    console.log(responses);
+    setState((state) => {
+      const newTime = Number(state[id].time) + 0.5;
+      return {
+        ...state,
+        1: {
+          id: 1,
+          currentX: responses[0],
+          time: newTime.toFixed(1),
+        },
+        2: {
+          id: 2,
+          currentX: responses[1],
+          time: newTime.toFixed(1),
+        },
+      };
+    });
+    setTimeout(updateState, 500, id);
+  };
+
+  useEffect(() => {
+    const timeOutId = setTimeout(updateState, 500, 1);
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, []);
+
+  const currentXes = Object.values(state).map((entry) => entry.currentX);
+
+  return <ChartRenderer currentX={currentXes} time={state[1].time} />;
 };
 
 export default ChartComponent;
