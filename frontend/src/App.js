@@ -3,6 +3,12 @@ import './App.css';
 import ChartComponent from './ChartComponent';
 import { SERVER_URL } from './consts';
 
+const enumMapping = {
+  GREEN: 2,
+  YELLOW: 1,
+  RED: 0,
+};
+
 const App = () => {
   const [state, setState] = useState({
     1: { id: 1, currentX: 0, time: 0 },
@@ -14,7 +20,7 @@ const App = () => {
       const response = await fetch(
         SERVER_URL + '/readTrafficLightState?tf_id=' + id
       );
-      return response;
+      return response.text();
     } catch (e) {
       return 0;
     }
@@ -24,9 +30,9 @@ const App = () => {
     const responses = [];
     Object.keys(state).forEach(async (id) => {
       const result = await fetchResponse(id);
+      console.log(result);
       responses.push(result);
     });
-    console.log("Responses inside fetch: " + responses);
     return responses;
   };
 
@@ -41,12 +47,12 @@ const App = () => {
         ...state,
         1: {
           id: 1,
-          currentX: Math.floor(Math.random() * 2),
+          currentX: responses[0],
           time: newTime.toFixed(1),
         },
         2: {
           id: 2,
-          currentX: Math.floor(Math.random() * 2),
+          currentX: responses[1],
           time: newTime.toFixed(1),
         },
       };
