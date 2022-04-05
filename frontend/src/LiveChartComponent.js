@@ -19,13 +19,14 @@ const LiveChartComponent = () => {
       const response = await fetch(
         SERVER_URL + '/readTrafficLightState?tf_id=' + id
       );
+      console.log(response);
       switch (response.status) {
         case 500:
         case 304:
         case 404:
           return 0;
         default:
-          response.json();
+          return response.json();
       }
     } catch (e) {
       return 0;

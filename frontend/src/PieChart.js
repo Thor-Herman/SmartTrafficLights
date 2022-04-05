@@ -8,14 +8,14 @@ import { customCanvasBackgroundColor } from './plugins';
 const PieChart = () => {
   const [trafficLightId, setTrafficLightId] = useState(0);
   const [trafficLightPercentages, setTrafficLightPercentages] = useState({
-    GREEN: 33,
-    RED: 33,
-    YELLOW: 33,
+    GREEN: 0,
+    RED: 0,
+    YELLOW: 0,
   });
 
   useEffect(() => {
     const response = fetch(
-      SERVER_URL + '/gridTrafficLightMetrics?tf_id=' + trafficLightId
+      SERVER_URL + '/readTrafficLightMetrics?tf_id=' + trafficLightId
     )
       .then((response) => response.json())
       .then((data) => {
