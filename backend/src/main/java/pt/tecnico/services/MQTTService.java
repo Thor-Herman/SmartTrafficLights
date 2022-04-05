@@ -125,12 +125,14 @@ public class MQTTService {
 
         //TESTING
         TrafficLight trafficLight = new TrafficLight(TrafficLightState.GREEN);
+        trafficLight.setGreenLightDuration(0);
+        trafficLight.setRedLightDuration(0);
+        trafficLight.setYellowLightDuration(0);
         trafficLightRepository.save(trafficLight);
         int i=0;
         while(true) {
             TrafficLightState newState = TrafficLightState.mapTrafficLightState(i % 3);
-            System.out.println("" + newState);
-            Optional<TrafficLight> tl = trafficLightRepository.findById(trafficLight.getId());
+            Optional<TrafficLight> tl = trafficLightRepository.findById(1);
             if(tl.isPresent()) {
                 tl.get().setCurrentLightState(newState);
                 trafficLightRepository.save(tl.get());

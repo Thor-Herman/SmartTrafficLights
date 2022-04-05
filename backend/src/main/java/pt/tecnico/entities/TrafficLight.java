@@ -16,13 +16,13 @@ public class TrafficLight {
     private Instant timestamp;
 
     @Column(name = "Red_Light_Duration")
-    private TrafficLightState redLightDuration;
+    private int redLightDuration;
 
     @Column(name = "Green_Light_Duration")
-    private TrafficLightState greenLightDuration;
+    private int greenLightDuration;
 
     @Column(name = "Yellow_Light_Duration")
-    private TrafficLightState yellowLightDuration;
+    private int yellowLightDuration;
 
     @Column(name = "Current_Light_State")
     private TrafficLightState currentLightState;
@@ -51,27 +51,27 @@ public class TrafficLight {
         this.timestamp = timestamp;
     }
 
-    public TrafficLightState getRedLightDuration() {
+    public int getRedLightDuration() {
         return redLightDuration;
     }
 
-    public void setRedLightDuration(TrafficLightState redLightDuration) {
+    public void setRedLightDuration(int redLightDuration) {
         this.redLightDuration = redLightDuration;
     }
 
-    public TrafficLightState getGreenLightDuration() {
+    public int getGreenLightDuration() {
         return greenLightDuration;
     }
 
-    public void setGreenLightDuration(TrafficLightState greenLightDuration) {
+    public void setGreenLightDuration(int greenLightDuration) {
         this.greenLightDuration = greenLightDuration;
     }
 
-    public TrafficLightState getYellowLightDuration() {
+    public int getYellowLightDuration() {
         return yellowLightDuration;
     }
 
-    public void setYellowLightDuration(TrafficLightState yellowLightDuration) {
+    public void setYellowLightDuration(int yellowLightDuration) {
         this.yellowLightDuration = yellowLightDuration;
     }
 
