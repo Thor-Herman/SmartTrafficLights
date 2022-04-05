@@ -31,11 +31,16 @@ export const options = {
       ticks: {
         // Include a dollar sign in the ticks
         callback: function (value, index, ticks) {
-          return value === 1 ? 'On' : value === 0 ? 'Off' : '';
+          switch(value) {
+            case 0: return 'RED';
+            case 1: return 'YELLOW';
+            case 2: return 'GREEN';
+            default: return '';
+          }
         },
       },
       min: 0,
-      max: 2,
+      max: 3,
       grid: {
         color: CHART_BG_COLOR,
       },

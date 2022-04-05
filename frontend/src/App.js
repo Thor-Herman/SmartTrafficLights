@@ -20,7 +20,7 @@ const App = () => {
       const response = await fetch(
         SERVER_URL + '/readTrafficLightState?tf_id=' + id
       );
-      return response.text();
+      return response.json();
     } catch (e) {
       return 0;
     }
@@ -32,8 +32,6 @@ const App = () => {
     for (let i = 0; i < keys.length; i++) {
       const id = keys[i];
       const result = await fetchResponse(id);
-      console.log(result);
-      console.log(enumMapping[result]);
       responses.push(enumMapping[result]);
     }
     // Object.keys(state).forEach(async (id) => {
@@ -45,8 +43,6 @@ const App = () => {
   };
 
   const updateState = async (id) => {
-    const t1 = new Date();
-    // const response = await fetchResponse(id);
     const responses = await fetchResponses();
     console.log(responses);
     setState((state) => {
@@ -55,7 +51,7 @@ const App = () => {
         ...state,
         1: {
           id: 1,
-          currentX: responses[0],
+          currentX: Math.floor(Math.random() * 3),
           time: newTime.toFixed(1),
         },
         2: {
@@ -78,8 +74,6 @@ const App = () => {
   }, []);
 
   const currentXes = Object.values(state).map((entry) => entry.currentX);
-
-  console.log('Current X es: ' + currentXes);
 
   return (
     <div className='app'>
