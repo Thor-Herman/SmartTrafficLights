@@ -26,6 +26,7 @@ const App = () => {
       const result = await fetchResponse(id);
       responses.push(result);
     });
+    console.log("Responses inside fetch: " + responses);
     return responses;
   };
 
