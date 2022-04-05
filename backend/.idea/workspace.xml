@@ -6,11 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="e9f4ac7e-265b-40bf-b6e8-d7f71107e850" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/controllers/DeviceManagementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/controllers/DeviceManagementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/entities/TrafficLight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/entities/TrafficLight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/repositories/TrafficLightRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/repositories/TrafficLightRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/services/DeviceManagementService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/services/DeviceManagementService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/37231197-69fa-4b25-850a-4ea31d972601-tcpioteclipseorg1883/.lck" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/c30426d2-50f6-4a83-8dc7-e30d2e1fd7d9-tcpioteclipseorg1883/.lck" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/controllers/DeviceMetricsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/controllers/DeviceMetricsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/entities/TrafficLightState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/entities/TrafficLightState.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pt/tecnico/services/MQTTService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/tecnico/services/MQTTService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/pt/tecnico/entities/TrafficLightState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/tecnico/entities/TrafficLightState.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/pt/tecnico/services/MQTTService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/pt/tecnico/services/MQTTService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +69,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../sec/SEC_project" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Documents/GitHub/Swiggest/SwiggestGateway" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />

@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import pt.tecnico.entities.Device;
 import pt.tecnico.entities.TrafficLight;
 import pt.tecnico.entities.TrafficLightState;
 import pt.tecnico.repositories.DeviceRepository;
@@ -18,8 +16,10 @@ import java.io.*;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class MQTTService {
@@ -126,8 +126,25 @@ public class MQTTService {
         //TESTING
         TrafficLight trafficLight = new TrafficLight(TrafficLightState.GREEN);
         trafficLightRepository.save(trafficLight);
+        int i=0;
+        while(true) {
+            TrafficLightState newState = TrafficLightState.mapTrafficLightState(i % 3);
+            System.out.println("" + newState);
+            Optional<TrafficLight> tl = trafficLightRepository.findById(trafficLight.getId());
+            if(tl.isPresent()) {
+                tl.get().setCurrentLightState(newState);
+                trafficLightRepository.save(tl.get());
+            }
+            i++;
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         //DONE TESTING
-        /**
+
+        /*
         List<TrafficLight> trafficLightList = new ArrayList<>();
         try {
             connect();
