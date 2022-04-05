@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { pieChartOptions } from './chartConfig';
 import { SERVER_URL } from './consts';
+import DropDown from './DropDown';
 import { customCanvasBackgroundColor } from './plugins';
 
 const PieChart = () => {
@@ -18,6 +19,7 @@ const PieChart = () => {
     )
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         setTrafficLightPercentages({
           GREEN: data.greenDuration,
           RED: data.redDuration,
@@ -48,11 +50,16 @@ const PieChart = () => {
   return (
     <div className='pie-chart'>
       <div>
+        <p>{trafficLightId}</p>
         <Pie
           options={pieChartOptions}
           data={data}
           plugins={[customCanvasBackgroundColor]}
         />
+        <DropDown>
+          <p onClick={() => setTrafficLightId(1)}>1</p>
+          <p onClick={() => setTrafficLightId(2)}>2</p>
+        </DropDown>
       </div>
     </div>
   );
