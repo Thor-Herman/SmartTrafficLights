@@ -19,23 +19,12 @@ public class DeviceMetricsController {
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping(path="/readRedDuration")
-    public ResponseEntity<Integer> readRedDuration(String id) {
-        int duration = deviceMetricsService.computeRedDuration(id);
-        return new ResponseEntity<>(duration, HttpStatus.OK);
-    }
-
-    @CrossOrigin(origins = "*")
-    @GetMapping(path="/readYellowDuration")
-    public ResponseEntity<Integer> readYellowDuration(String id) {
-        int duration = deviceMetricsService.computeYellowDuration(id);
-        return new ResponseEntity<>(duration, HttpStatus.OK);
-    }
-
-    @CrossOrigin(origins = "*")
-    @GetMapping(path="/readGreenDuration")
-    public ResponseEntity<Integer> readGreenDuration(String id) {
-        int duration = deviceMetricsService.computeGreenDuration(id);
-        return new ResponseEntity<>(duration, HttpStatus.OK);
+    @GetMapping(path="/readTrafficLightMetrics")
+    public ResponseEntity<int[]> readRedDuration(String id) {
+        int redDuration = deviceMetricsService.computeRedDuration(id);
+        int yellowDuration = deviceMetricsService.computeYellowDuration(id);
+        int greenDuration = deviceMetricsService.computeGreenDuration(id);
+        int[] durations = {redDuration, yellowDuration, greenDuration};
+        return new ResponseEntity<>(durations, HttpStatus.OK);
     }
 }
