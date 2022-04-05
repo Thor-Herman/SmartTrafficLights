@@ -28,11 +28,19 @@ const App = () => {
 
   const fetchResponses = async () => {
     const responses = [];
-    Object.keys(state).forEach(async (id) => {
+    const keys = Object.keys(state);
+    for (let i = 0; i < keys.length; i++) {
+      const id = keys[i];
       const result = await fetchResponse(id);
       console.log(result);
-      responses.push(result);
-    });
+      console.log(enumMapping[result]);
+      responses.push(enumMapping[result]);
+    }
+    // Object.keys(state).forEach(async (id) => {
+    //   const result = await fetchResponse(id);
+    //   console.log(enumMapping[result]);
+    //   responses.push(enumMapping[result]);
+    // });
     return responses;
   };
 
@@ -40,7 +48,7 @@ const App = () => {
     const t1 = new Date();
     // const response = await fetchResponse(id);
     const responses = await fetchResponses();
-    console.log('responses ' + responses);
+    console.log(responses);
     setState((state) => {
       const newTime = Number(state[id].time) + 0.5;
       return {
