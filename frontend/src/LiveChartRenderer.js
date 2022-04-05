@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { options } from './chartConfig';
+import { options } from './LiveChartConfig';
 import { MAX_POINTS_DISPLAYED_ON_CHART } from './consts';
 import { customCanvasBackgroundColor } from './plugins';
 
-const ChartRenderer = ({ currentX, time }) => {
+const LiveChartRenderer = ({ currentX, time }) => {
   const [labels, setLabels] = useState([]);
   const [xDataSet, setXDataSet] = useState([[], []]);
 
@@ -56,4 +56,4 @@ const ChartRenderer = ({ currentX, time }) => {
   );
 };
 
-export default ChartRenderer;
+export default LiveChartRenderer;

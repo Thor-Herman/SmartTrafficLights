@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import ChartRenderer from './ChartRenderer';
+import LiveChartRenderer from './LiveChartRenderer';
 import { SERVER_URL } from './consts';
 
 const enumMapping = {
@@ -8,7 +8,7 @@ const enumMapping = {
   RED: 0,
 };
 
-const ChartComponent = () => {
+const LiveChartComponent = () => {
   const [state, setState] = useState({
     1: { id: 1, currentX: 0, time: 0 },
     2: { id: 2, currentX: 0, time: 0 },
@@ -74,7 +74,7 @@ const ChartComponent = () => {
 
   const currentXes = Object.values(state).map((entry) => entry.currentX);
 
-  return <ChartRenderer currentX={currentXes} time={state[1].time} />;
+  return <LiveChartRenderer currentX={currentXes} time={state[1].time} />;
 };
 
-export default ChartComponent;
+export default LiveChartComponent;

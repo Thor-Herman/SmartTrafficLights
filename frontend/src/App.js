@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import ChartComponent from './ChartComponent';
+import LiveChartComponent from './LiveChartComponent';
 
 const App = () => {
   return (
     <div className='app'>
-      <ChartComponent />
+      <LiveChartComponent />
     </div>
   );
 };
