@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { options } from './LiveChartConfig';
+import { liveChartOptions } from './chartConfig';
 import { MAX_POINTS_DISPLAYED_ON_CHART } from './consts';
 import { customCanvasBackgroundColor } from './plugins';
 
@@ -46,10 +46,10 @@ const LiveChartRenderer = ({ currentX, time }) => {
   };
 
   return (
-    <div className='chart'>
+    <div className='live-chart'>
       <Line
         data={data}
-        options={options}
+        options={liveChartOptions}
         plugins={[customCanvasBackgroundColor]}
       />
     </div>

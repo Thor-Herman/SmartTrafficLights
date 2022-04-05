@@ -1,15 +1,16 @@
-import { CHART_BG_COLOR } from "./consts";
 import {
+  ArcElement,
   BarElement,
   CategoryScale,
   Chart as ChartJS,
   Legend,
   LinearScale,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
-  PointElement,
-  LineElement,
 } from 'chart.js';
+import { CHART_BG_COLOR } from './consts';
 
 ChartJS.register(
   CategoryScale,
@@ -19,23 +20,28 @@ ChartJS.register(
   Tooltip,
   Legend,
   PointElement,
-  LineElement
+  LineElement,
+  ArcElement
 );
 
 ChartJS.defaults.color = '#AAAAAA';
 
-export const options = {
+export const liveChartOptions = {
   responsive: true,
   scales: {
     y: {
       ticks: {
         // Include a dollar sign in the ticks
         callback: function (value, index, ticks) {
-          switch(value) {
-            case 0: return 'RED';
-            case 1: return 'YELLOW';
-            case 2: return 'GREEN';
-            default: return '';
+          switch (value) {
+            case 0:
+              return 'RED';
+            case 1:
+              return 'YELLOW';
+            case 2:
+              return 'GREEN';
+            default:
+              return '';
           }
         },
       },
@@ -61,4 +67,9 @@ export const options = {
   transitions: {
     active: 100,
   },
+};
+
+export const pieChartOptions = {
+  responsive: true,
+  backgroundColor: CHART_BG_COLOR, 
 };
