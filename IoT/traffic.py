@@ -54,17 +54,18 @@ def train_bg_subtractor(inst, cap, num=500):
 
 def main():
     log = logging.getLogger("main")
-    client = paho.Client("traffic_light_1")  # Create client object
+    global total_vehicles
+    #client = paho.Client("traffic_light_1")  # Create client object
     #client.on_message = on_message  # Bind function to callback
     # Connecting to broker
-    print("Connecting to broker", BROKER)
-    client.connect(BROKER, 8883)
+    #print("Connecting to broker", BROKER)
+    #client.connect(BROKER, 8883)
     # Start loop to process received messages
-    client.loop_start()
+    #client.loop_start()
     # Subscribe
-    print("Subscribing")
-    client.subscribe(TOPIC)
-    time.sleep(2)
+    #print("Subscribing")
+    #client.subscribe(TOPIC)
+    #time.sleep(2)
 
     # creating exit mask from points, where we will be counting our vehicles
     base = np.zeros(SHAPE + (3,), dtype='uint8')
@@ -125,9 +126,9 @@ def main():
             total_vehicles = vehicle_count
             # Publishing
             print("Publishing")
-            client.publish(TOPIC, str(total_vehicles))
-    client.disconnect()  # Disconnect
-    client.loop_stop()  # Stop loop
+            #client.publish(TOPIC, str(total_vehicles))
+    #client.disconnect()  # Disconnect
+    #client.loop_stop()  # Stop loop
 
 # ============================================================================
 
