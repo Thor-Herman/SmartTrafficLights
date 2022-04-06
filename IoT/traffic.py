@@ -9,10 +9,13 @@ import cv2
 import matplotlib.pyplot as plt
 
 import utils
+
+import time
+import paho.mqtt.client as paho
+
 # without this some strange errors happen
 cv2.ocl.setUseOpenCL(False)
 random.seed(123)
-
 
 from pipeline import (
     PipelineRunner,
@@ -28,8 +31,14 @@ SHAPE = (720, 1280)  # HxW
 EXIT_PTS = np.array([
     [[732, 720], [732, 590], [1280, 500], [1280, 720]]
 ])
+total_vehicles = 0
+TOPIC = "TRAFFIC_LIGHT_1_DATA"
+BROKER = "165.225.92.214"
 # ============================================================================
 
+def on_message(client, userdata, message):
+    time.sleep(1)
+    print("Received message =", str(message.payload.decode("utf-8")))
 
 def train_bg_subtractor(inst, cap, num=500):
     '''
@@ -43,9 +52,19 @@ def train_bg_subtractor(inst, cap, num=500):
         if i >= num:
             return cap
 
-
 def main():
     log = logging.getLogger("main")
+    client = paho.Client("traffic_light_1")  # Create client object
+    #client.on_message = on_message  # Bind function to callback
+    # Connecting to broker
+    print("Connecting to broker", BROKER)
+    client.connect(BROKER, 8883)
+    # Start loop to process received messages
+    client.loop_start()
+    # Subscribe
+    print("Subscribing")
+    client.subscribe(TOPIC)
+    time.sleep(2)
 
     # creating exit mask from points, where we will be counting our vehicles
     base = np.zeros(SHAPE + (3,), dtype='uint8')
@@ -66,7 +85,7 @@ def main():
         Visualizer(image_dir=IMAGE_DIR),
         CsvWriter(path='./', name='report.csv')
     ], log_level=logging.DEBUG)
-
+    
     # Set up image source
     # You can use also CV2, for some reason it not working for me
     cap = skvideo.io.vreader(VIDEO_SOURCE)
@@ -100,7 +119,15 @@ def main():
             'frame': frame,
             'frame_number': frame_number,
         })
-        pipeline.run()
+        #pipeline.run()
+        vehicle_count = pipeline.run()
+        if total_vehicles != vehicle_count:
+            total_vehicles = vehicle_count
+            # Publishing
+            print("Publishing")
+            client.publish(TOPIC, str(total_vehicles))
+    client.disconnect()  # Disconnect
+    client.loop_stop()  # Stop loop
 
 # ============================================================================
 

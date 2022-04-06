@@ -5,6 +5,8 @@ import csv
 import numpy as np
 import cv2
 
+import paho.mqtt.client as mqtt
+
 import utils
 
 
@@ -60,7 +62,7 @@ class PipelineRunner(object):
 
         self.log.debug("Frame #%d processed.", self.context['frame_number'])
 
-        return self.context
+        return self.context['vehicle_count']
 
 
 class PipelineProcessor(object):
@@ -273,7 +275,7 @@ class VehicleCounter(PipelineProcessor):
                 # path len is bigger then min
                 self.path_size <= len(path)
             ):
-                self.vehicle_count += 1
+                self.vehicle_count += 1                
             else:
                 # prevent linking with path that already in exit zone
                 add = True
