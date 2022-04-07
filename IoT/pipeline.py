@@ -5,6 +5,8 @@ import csv
 import numpy as np
 import cv2
 
+import paho.mqtt.client as mqtt
+
 import utils
 
 
@@ -22,7 +24,6 @@ class PipelineRunner(object):
         Just run passed processors in order with passing context from one to 
         another.
 
-        You can also set log level for processors.
     '''
 
     def __init__(self, pipeline=None, log_level=logging.DEBUG):
@@ -60,7 +61,7 @@ class PipelineRunner(object):
 
         self.log.debug("Frame #%d processed.", self.context['frame_number'])
 
-        return self.context
+        return self.context['vehicle_count']
 
 
 class PipelineProcessor(object):
@@ -118,7 +119,7 @@ class ContourDetection(PipelineProcessor):
 
         matches = []
 
-        # finding external contours
+        # Finding external contours
         if self.major == '3':
             _, contours, _ = cv2.findContours(
                 fg_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_L1)
@@ -145,7 +146,7 @@ class ContourDetection(PipelineProcessor):
         frame_number = context['frame_number']
 
         fg_mask = self.bg_subtractor.apply(frame, None, 0.001)
-        # just thresholding values
+        # Thresholding values
         fg_mask[fg_mask < 240] = 0
         fg_mask = self.filter_mask(fg_mask, frame_number)
 
@@ -200,16 +201,16 @@ class VehicleCounter(PipelineProcessor):
         if not objects:
             return context
 
-        points = np.array(objects)[:, 0:2]
+        points = np.array(objects, dtype=object)[:, 0:2]
         points = points.tolist()
 
-        # add new points if pathes is empty
+        # Add new points if pathes is empty
         if not self.pathes:
             for match in points:
                 self.pathes.append([match])
 
         else:
-            # link new points with old pathes based on minimum distance between
+            # Link new points with old pathes based on minimum distance between
             # points
             new_pathes = []
 
@@ -218,10 +219,10 @@ class VehicleCounter(PipelineProcessor):
                 _match = None
                 for p in points:
                     if len(path) == 1:
-                        # distance from last point to current
+                        # Distance from last point to current
                         d = utils.distance(p[0], path[-1][0])
                     else:
-                        # based on 2 prev points predict next point and calculate
+                        # Based on 2 prev points predict next point and calculate
                         # distance from predicted next point to current
                         xn = 2 * path[-1][0][0] - path[-2][0][0]
                         yn = 2 * path[-1][0][1] - path[-2][0][1]
@@ -240,42 +241,42 @@ class VehicleCounter(PipelineProcessor):
                     path.append(_match)
                     new_pathes.append(path)
 
-                # do not drop path if current frame has no matches
+                # Do not drop path if current frame has no matches
                 if _match is None:
                     new_pathes.append(path)
 
             self.pathes = new_pathes
 
-            # add new pathes
+            # Add new pathes
             if len(points):
                 for p in points:
-                    # do not add points that already should be counted
+                    # Do not add points that already should be counted
                     if self.check_exit(p[1]):
                         continue
                     self.pathes.append([p])
 
-        # save only last N points in path
+        # Save only last N points in path
         for i, _ in enumerate(self.pathes):
             self.pathes[i] = self.pathes[i][self.path_size * -1:]
 
-        # count vehicles and drop counted pathes:
+        # Count vehicles and drop counted pathes:
         new_pathes = []
         for i, path in enumerate(self.pathes):
             d = path[-2:]
 
             if (
-                # need at list two points to count
+                # Need at list two points to count
                 len(d) >= 2 and
-                # prev point not in exit zone
+                # Prev point not in exit zone
                 not self.check_exit(d[0][1]) and
-                # current point in exit zone
+                # Current point in exit zone
                 self.check_exit(d[1][1]) and
-                # path len is bigger then min
+                # Path len is bigger then min
                 self.path_size <= len(path)
             ):
-                self.vehicle_count += 1
+                self.vehicle_count += 1                
             else:
-                # prevent linking with path that already in exit zone
+                # Prevent linking with path that already in exit zone
                 add = True
                 for p in path:
                     if self.check_exit(p[1]):
@@ -343,7 +344,7 @@ class Visualizer(PipelineProcessor):
             return
 
         for i, path in enumerate(pathes):
-            path = np.array(path)[:, 1].tolist()
+            path = np.array(path, dtype=object)[:, 1].tolist()
             for point in path:
                 cv2.circle(img, point, 2, CAR_COLOURS[0], -1)
                 cv2.polylines(img, [np.int32(path)], False, CAR_COLOURS[0], 1)
@@ -367,14 +368,14 @@ class Visualizer(PipelineProcessor):
 
     def draw_ui(self, img, vehicle_count, exit_masks=[]):
 
-        # this just add green mask with opacity to the image
+        # This just add green mask with opacity to the image
         for exit_mask in exit_masks:
             _img = np.zeros(img.shape, img.dtype)
             _img[:, :] = EXIT_COLOR
             mask = cv2.bitwise_and(_img, _img, mask=exit_mask)
             cv2.addWeighted(mask, 1, img, 1, 0, img)
 
-        # drawing top block with counts
+        # Drawing top block with counts
         cv2.rectangle(img, (0, 0), (img.shape[1], 50), (0, 0, 0), cv2.FILLED)
         cv2.putText(img, ("Vehicles passed: {total} ".format(total=vehicle_count)), (30, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
@@ -395,4 +396,3 @@ class Visualizer(PipelineProcessor):
                          "/processed_%04d.png" % frame_number)
 
         return context
-
