@@ -54,11 +54,13 @@ const LiveChartComponent = () => {
         1: {
           id: 1,
           currentX: responses[0],
+          // currentX: Math.floor(Math.random() * 3),
           time: newTime.toFixed(1),
         },
         2: {
           id: 2,
           currentX: responses[1],
+          // currentX: Math.floor(Math.random() * 3),
           time: newTime.toFixed(1),
         },
       };

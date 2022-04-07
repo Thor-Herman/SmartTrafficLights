@@ -1,16 +1,18 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   background-color: #18191a;
   overflow-y: auto;
   overflow-x: hidden;
   height: 100vh;
   width: 100vw;
-  color: #FFFF;     
+  color: #ffff;
 }
 
 .app {
   position: relative;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -22,9 +24,44 @@ body {
   padding: 1rem;
 }
 
+.pie-container {
+  position: relative;
+  max-width: 30%;
+}
+
 .pie-chart {
   position: relative;
   width: 80vw;
-  height: 40vh;
-  margin-top: 4em;
+  margin: 4em 0;
+  border-left: 4rem;
+  border-color: #18191a;
+  border-style: solid;
+  padding: 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.center {
+  justify-content: center;
+  align-items: center;
+}
+
+.pie-chart .dropdown {
+  margin-top: 2rem;
+}
+
+.pie-chart .inner {
+  padding: 1rem 0 3rem 0;
+  background-color: #20232a;
+}
+
+.pie-chart-title {
+  font-size: em;
+  color: #98999a;
 }

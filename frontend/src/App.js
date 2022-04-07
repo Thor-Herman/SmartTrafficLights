@@ -5,7 +5,7 @@ import PieChart from './PieChart';
 
 const App = () => {
   return (
-    <div className='app'>
+    <div className='app flex column'>
       <LiveChartComponent />
       <PieChart />
     </div>

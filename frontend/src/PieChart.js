@@ -8,9 +8,9 @@ import { customCanvasBackgroundColor } from './plugins';
 const PieChart = () => {
   const [trafficLightId, setTrafficLightId] = useState(0);
   const [trafficLightPercentages, setTrafficLightPercentages] = useState({
-    GREEN: 0,
-    RED: 0,
-    YELLOW: 0,
+    GREEN: 33,
+    RED: 33,
+    YELLOW: 33,
   });
 
   useEffect(() => {
@@ -49,14 +49,18 @@ const PieChart = () => {
 
   return (
     <div className='pie-chart'>
-      <div>
-        <p>{trafficLightId}</p>
-        <Pie
-          options={pieChartOptions}
-          data={data}
-          plugins={[customCanvasBackgroundColor]}
-        />
-        <DropDown>
+      <div className='inner flex column center'>
+        <p className='pie-chart-title'>
+          Overall light status for light: {trafficLightId}
+        </p>
+        <div className='pie-container'>
+          <Pie
+            options={pieChartOptions}
+            data={data}
+            plugins={[customCanvasBackgroundColor]}
+          />
+        </div>
+        <DropDown dropdownName={'Lights'}>
           <p onClick={() => setTrafficLightId(1)}>1</p>
           <p onClick={() => setTrafficLightId(2)}>2</p>
         </DropDown>

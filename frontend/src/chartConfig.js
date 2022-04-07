@@ -71,5 +71,7 @@ export const liveChartOptions = {
 
 export const pieChartOptions = {
   responsive: true,
-  backgroundColor: CHART_BG_COLOR, 
+  backgroundColor: CHART_BG_COLOR,
+  maintainAspectRatio: true,
+  aspectRatio: 1,
 };
