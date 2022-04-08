@@ -12,6 +12,8 @@ public interface TrafficLightRepository extends CrudRepository<TrafficLight, Int
 
     Optional<TrafficLight> findById(Integer id);
 
+    TrafficLight findByStreetAddress(String streetAddress);
+
     List<TrafficLight> findAll();
 
 }

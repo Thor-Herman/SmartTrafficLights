@@ -16,7 +16,7 @@ import java.lang.invoke.MethodHandles;
 @RestController
 public class DeviceManagementController {
 
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getSimpleName());
 
     private final DeviceManagementService deviceManagementService;
 

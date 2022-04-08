@@ -4,42 +4,39 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import pt.tecnico.entities.Device;
 import pt.tecnico.entities.TrafficLight;
 import pt.tecnico.entities.TrafficLightState;
-import pt.tecnico.repositories.DeviceRepository;
 import pt.tecnico.repositories.TrafficLightRepository;
 
-import java.io.*;
+import javax.annotation.PostConstruct;
 import java.lang.invoke.MethodHandles;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+
+import static java.lang.Thread.sleep;
 
 @Service
 public class MQTTService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getSimpleName());
-    private final String TODO_TOPIC = "TODO";
-    private final String TRAFFIC_LIGHT_1_DATA_TOPIC = "TRAFFIC_LIGHT_1_DATA";
-    private final String TRAFFIC_LIGHT_2_DATA_TOPIC = "TRAFFIC_LIGHT_2_DATA";
+    private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getSimpleName());
+    private final String TRAFFIC_LIGHT_1_CARS_TOPIC = "TRAFFIC_LIGHT_1_CARS";
+    private final String TRAFFIC_LIGHT_2_CARS_TOPIC = "TRAFFIC_LIGHT_2_CARS";
+    private final String TRAFFIC_LIGHT_1_STATE_TOPIC = "TRAFFIC_LIGHT_1_STATE";
+    private final String TRAFFIC_LIGHT_2_STATE_TOPIC = "TRAFFIC_LIGHT_2_STATE";
     private final String SERVER_URI = "tcp://localhost:1883";
     private final int CONNECTION_TIMEOUT = 10;
     private final int QOS = 0;
 
-    private final DeviceRepository deviceRepository;
+    private final DeviceManagementService deviceManagementService;
     private final TrafficLightRepository trafficLightRepository;
     private IMqttClient publisher;
     private IMqttClient subscriber;
-    private String payload;
 
     @Autowired
-    public MQTTService(DeviceRepository deviceRepository, TrafficLightRepository trafficLightRepository) {
-        this.deviceRepository = deviceRepository;
+    public MQTTService(DeviceManagementService deviceManagementService, TrafficLightRepository trafficLightRepository) {
+        this.deviceManagementService = deviceManagementService;
         this.trafficLightRepository = trafficLightRepository;
         setup();
     }
@@ -55,125 +52,155 @@ public class MQTTService {
         }
     }
 
-    public void connect() throws MqttException {
+    public void connect() {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
         options.setConnectionTimeout(CONNECTION_TIMEOUT);
-        publisher.connect(options);
-        subscriber.connect(options);
+        try {
+            publisher.connect(options);
+            subscriber.connect(options);
+        } catch (MqttException e) {
+            logger.error("Error: ", e);
+        }
     }
 
-    private void send(String topic, MqttMessage msg) throws MqttException {
+    private void send(String topic, MqttMessage msg) {
         if (!publisher.isConnected()) {
             logger.error("Publisher is not connected.");
             return;
         }
         msg.setQos(QOS);
         msg.setRetained(true);
-        publisher.publish(topic, msg);
+        try {
+            publisher.publish(topic, msg);
+        } catch (MqttException e) {
+            logger.error("Error: ", e);
+        }
     }
 
-
-    public void requestInitialTrafficLightData() throws MqttException {
-        double temp = 80; //TODO: Read actual data from Pi
-        byte[] payload = String.valueOf(temp).getBytes();
-        send(TRAFFIC_LIGHT_1_DATA_TOPIC, new MqttMessage(payload));
-        send(TRAFFIC_LIGHT_2_DATA_TOPIC, new MqttMessage(payload));
-    }
-
-    public void requestTrafficData() throws MqttException {
-        double temp = 80; //TODO: Read actual data from Pi
-        byte[] payload = String.valueOf(temp).getBytes();
-        send(TODO_TOPIC, new MqttMessage(payload));
-    }
-
-    public void sendNewTrafficLightState(TrafficLightState state) throws MqttException {
+    public void sendNewTrafficLightState(int tf_id, TrafficLightState state) {
+        logger.info("Sending new traffic light state...");
         byte[] payload = String.valueOf(state).getBytes();
-        send(TODO_TOPIC, new MqttMessage(payload));
+        if(tf_id == 1) {
+            send(TRAFFIC_LIGHT_1_CARS_TOPIC, new MqttMessage(payload));
+        } else if(tf_id == 2) {
+            send(TRAFFIC_LIGHT_2_CARS_TOPIC, new MqttMessage(payload));
+        }
     }
 
-    private void setPayload(String payload) {
-        this.payload = payload;
-    }
-
-    public List<TrafficLight> receiveInitialTrafficLightData() throws MqttException, InterruptedException {
+    private List<TrafficLight> receiveTrafficLightState() {
         if (!subscriber.isConnected()) {
             logger.error("Subscriber is not connected.");
             return null;
         }
-        CountDownLatch receivedSignal = new CountDownLatch(10);
-
+        logger.info("Receiving traffic light state...");
         List<TrafficLight> trafficLightList = new ArrayList<>();
 
-        subscriber.subscribe(TRAFFIC_LIGHT_1_DATA_TOPIC, (topic, msg) -> {
-            if (msg != null) {
-                logger.info(msg.toString());
-                setPayload(msg.toString());
-                TrafficLight deserializedTrafficLight =
-                        new TrafficLight(TrafficLightState.mapTrafficLightState(Integer.parseInt(msg.toString())));
-                logger.info("Deserialized tf object with id: " + deserializedTrafficLight.getId() +
-                        " and state: " + deserializedTrafficLight.getCurrentLightState());
-                trafficLightList.add(deserializedTrafficLight);
-            } else {
-                logger.error("IS NULL...");
-            }
-            receivedSignal.countDown();
-        });
+        trafficLightList.add(subscribeToTopic(TRAFFIC_LIGHT_1_STATE_TOPIC));
+        trafficLightList.add(subscribeToTopic(TRAFFIC_LIGHT_2_STATE_TOPIC));
+
         return trafficLightList;
     }
 
-    private void receiveTrafficData() {
-        //TODO: Receive cars in road
-    }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void initializeDevice() {
-
-        //TESTING
-        /*
-        TrafficLight trafficLight = new TrafficLight(TrafficLightState.GREEN);
-        trafficLight.setGreenLightDuration(0);
-        trafficLight.setRedLightDuration(0);
-        trafficLight.setYellowLightDuration(0);
-        trafficLightRepository.save(trafficLight);
-        int i=0;
-        while(true) {
-            TrafficLightState newState = TrafficLightState.mapTrafficLightState(i % 3);
-            Optional<TrafficLight> tl = trafficLightRepository.findById(1);
-            if(tl.isPresent()) {
-                tl.get().setCurrentLightState(newState);
-                trafficLightRepository.save(tl.get());
-            }
-            i++;
-            try {
-                TimeUnit.SECONDS.sleep(3);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        */
-        //DONE TESTING
-
+    private TrafficLight subscribeToTopic(String TOPIC) {
+        CountDownLatch receivedSignal = new CountDownLatch(10);
         List<TrafficLight> trafficLightList = new ArrayList<>();
         try {
-            connect();
-            requestInitialTrafficLightData();
-            trafficLightList = receiveInitialTrafficLightData();
-        } catch (MqttException | InterruptedException e) {
-            logger.error("Error: ", e);
+            subscriber.subscribe(TOPIC, (topic, msg) -> {
+                if (msg != null) {
+                    logger.info(msg.toString());
+                    String[] received = msg.toString().split("/");
+                    TrafficLight deserializedTrafficLight =
+                            new TrafficLight(received[0], Integer.parseInt(received[1]));
+                    logger.info("Deserialized tf object with address: " + deserializedTrafficLight.getStreetAddress());
+                    trafficLightList.add(deserializedTrafficLight);
+                } else {
+                    logger.error("Message is null...");
+                }
+                receivedSignal.countDown();
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
         }
-        if(!trafficLightList.isEmpty()) {
-            TrafficLight tf1 = trafficLightList.get(0);
-            TrafficLight tf2 = trafficLightList.get(1);
-            Device device = new Device(tf1, tf2);
-            try {
-                trafficLightRepository.save(tf1);
-                trafficLightRepository.save(tf2);
-                deviceRepository.save(device);
-            } catch (DataAccessException e) {
-                logger.error("Error: ", e);
+        if(trafficLightList.isEmpty()) {
+            return null;
+        }
+        return trafficLightList.get(0);
+    }
+
+    @PostConstruct
+    public void initialize() {
+
+        List<TrafficLight> trafficLightList;
+        connect();
+        trafficLightList = receiveTrafficLightState();
+
+        if(trafficLightList != null) {
+            if(trafficLightList.get(0) != null) {
+                TrafficLight tf1 = trafficLightList.get(0);
+                try {
+                    trafficLightRepository.save(tf1);
+                } catch (DataAccessException e) {
+                    logger.error("Error: ", e);
+                }
+            }
+            if(trafficLightList.get(1) != null) {
+                TrafficLight tf2 = trafficLightList.get(1);
+                try {
+                    trafficLightRepository.save(tf2);
+                } catch (DataAccessException e) {
+                    logger.error("Error: ", e);
+                }
             }
         }
+
+        Runnable runnable = () -> {
+            List<TrafficLight> trafficLights;
+            while(true) {
+                trafficLights = receiveTrafficLightState();
+                if(trafficLightList != null) {
+                    if(trafficLightList.get(0) != null) {
+                        TrafficLight tf1 = trafficLightRepository.findByStreetAddress(
+                                trafficLights != null ? trafficLights.get(0).getStreetAddress() : null);
+                        try {
+                            trafficLightRepository.save(tf1);
+                        } catch (DataAccessException e) {
+                            logger.error("Error: ", e);
+                        }
+                    }
+                    if(trafficLightList.get(1) != null) {
+                        TrafficLight tf2 = trafficLightRepository.findByStreetAddress(
+                                trafficLights != null ? trafficLights.get(1).getStreetAddress() : null);
+                        try {
+                            trafficLightRepository.save(tf2);
+                        } catch (DataAccessException e) {
+                            logger.error("Error: ", e);
+                        }
+                    }
+                }
+                try {
+                    sleep(1000);
+                }
+                catch (InterruptedException e) {}
+            }
+        };
+        Thread t = new Thread(runnable);
+        t.start();
+
+        Runnable runnable1 = () -> {
+            int trafficLightSize = trafficLightRepository.findAll().size();
+            for(int i = 0; i<trafficLightSize; i++) {
+                TrafficLightState state = deviceManagementService.setTrafficLightState(i);
+                sendNewTrafficLightState(i, state);
+            }
+            try {
+                sleep(1000);
+            }
+            catch (InterruptedException e) {}
+        };
+        Thread t1 = new Thread(runnable1);
+        t1.start();
+
     }
 }

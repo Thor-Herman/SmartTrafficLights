@@ -12,9 +12,6 @@ public class TrafficLight {
     @Column(name = "Traffic_Light_ID")
     private int id;
 
-    @Column(name = "Timestamp", nullable = false)
-    private Instant timestamp;
-
     @Column(name = "Red_Light_Duration")
     private int redLightDuration;
 
@@ -24,15 +21,31 @@ public class TrafficLight {
     @Column(name = "Yellow_Light_Duration")
     private int yellowLightDuration;
 
+    @Column(name = "Last_Red_Light")
+    private Instant lastRedLight;
+
+    @Column(name = "Last_Green_Light")
+    private Instant lastGreenLight;
+
+    @Column(name = "Last_Yellow_Light")
+    private Instant lastYellowLight;
+
     @Column(name = "Current_Light_State")
     private TrafficLightState currentLightState;
 
+    @Column(name = "Street_Address")
+    private String streetAddress;
+
+    @Column(name = "Cars")
+    private int cars;
+
     public TrafficLight() {
+
     }
 
-    public TrafficLight(TrafficLightState currentLightState) {
-        this.currentLightState = currentLightState;
-        timestamp = Instant.now();
+    public TrafficLight(String streetAddress, int cars) {
+        this.streetAddress = streetAddress;
+        this.cars = cars;
     }
 
     public int getId() {
@@ -41,14 +54,6 @@ public class TrafficLight {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Instant timestamp) {
-        this.timestamp = timestamp;
     }
 
     public int getRedLightDuration() {
@@ -81,5 +86,45 @@ public class TrafficLight {
 
     public void setCurrentLightState(TrafficLightState currentLightState) {
         this.currentLightState = currentLightState;
+    }
+
+    public String getStreetAddress() {
+        return streetAddress;
+    }
+
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
+    }
+
+    public int getCars() {
+        return cars;
+    }
+
+    public void setCars(int cars) {
+        this.cars = cars;
+    }
+
+    public Instant getLastRedLight() {
+        return lastRedLight;
+    }
+
+    public void setLastRedLight(Instant lastRedLight) {
+        this.lastRedLight = lastRedLight;
+    }
+
+    public Instant getLastGreenLight() {
+        return lastGreenLight;
+    }
+
+    public void setLastGreenLight(Instant lastGreenLight) {
+        this.lastGreenLight = lastGreenLight;
+    }
+
+    public Instant getLastYellowLight() {
+        return lastYellowLight;
+    }
+
+    public void setLastYellowLight(Instant lastYellowLight) {
+        this.lastYellowLight = lastYellowLight;
     }
 }

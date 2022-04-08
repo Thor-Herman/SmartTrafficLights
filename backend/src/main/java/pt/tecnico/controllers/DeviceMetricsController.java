@@ -15,7 +15,7 @@ import java.lang.invoke.MethodHandles;
 @RestController
 public class DeviceMetricsController {
 
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getSimpleName());
 
     private final DeviceMetricsService deviceMetricsService;
 
